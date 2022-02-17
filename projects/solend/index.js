@@ -29,6 +29,13 @@ async function borrowed() {
         new PublicKey("8bDyV3N7ctLKoaSVqUoEwUzw6msS2F65yyNPgAVUisKm"),
         new PublicKey("UTABCRXirrbpCNDogCoqEECtM3V44jXGCsK23ZepV3Z"),
         new PublicKey("EjUgEaPpKMg2nqex9obb46gZQ6Ar9mWSdVKbw9A6PyXA"),
+        new PublicKey("4XYbgZJirfnwjmpJKQgMQEvjncYFi2CsPTFzBguCjCjG"),
+        new PublicKey("AuT5vA4bScsaJBiyNHnAttKToTCHj4Kwi4sg8bCyPPr8"),
+        new PublicKey("7MymBKwTPPMC4A9Ktwc1F2V5Xw7Kj3DqvRYUvLk2SF4h"),
+        new PublicKey("C5ozcRb4PJeJvakPeGgm9bgwcL6rPcKPfV95d2owW86C"),
+        new PublicKey("7trBAMkVU8dcPQVdScz7VNywZwqnD1rwXkwkVPQJ95bT"),
+        new PublicKey("HH9Aig5MAvMNcivGfAbWU5Da9nfiTwBaYJBK2KZyZppn"),
+        new PublicKey("FCU2wpx3ED1dY7bKszzcyxUVNTduLurUEmCGGv2w3Lfm"),
       ],
       "processed"
     )
@@ -59,6 +66,13 @@ async function borrowed() {
     fttAmount,
     turboSolSolAmount,
     turboSolUsdcAmount,
+    invictusLsinAmount,
+    invictusUsdcAmount,
+    invictusUstAmount,
+    stepPoolStepAmount,
+    stepPoolSolAmount,
+    stepPoolXstepAmount,
+    stepPoolUsdcAmount,
   ] = parsedAccounts.map((acc) => {
     return new BigNumber(
       acc.info.liquidity.borrowedAmountWads.toString()
@@ -73,7 +87,7 @@ async function borrowed() {
 
   return {
     bitcoin: btcAmount,
-    "usd-coin": usdcAmount.plus(turboSolUsdcAmount),
+    "usd-coin": usdcAmount.plus(turboSolUsdcAmount).plus(invictusUsdcAmount).plus(stepPoolUsdcAmount),
     ethereum: ethAmount.plus(wewethAmount),
     serum: srmAmount,
     tether: usdtAmount,
@@ -81,13 +95,16 @@ async function borrowed() {
     raydium: rayAmount,
     saber: sbrAmount,
     mercurial: merAmount,
-    solana: solAmount.plus(turboSolSolAmount),
+    solana: solAmount.plus(turboSolSolAmount).plus(stepPoolSolAmount),
     msol: msolAmount,
     solend: slndAmount,
     "socean-staked-sol": scnsolAmount,
     "lido-staked-sol": stsolAmount,
-    terrausd: ustAmount,
+    terrausd: ustAmount.plus(invictusUstAmount),
     orca: orcaAmount,
+    lsin: invictusLsinAmount,
+    step: stepPoolStepAmount,
+    xStep: stepPoolXstepAmount,
   };
 }
 
@@ -113,6 +130,13 @@ async function tvl() {
     fttAmount,
     turboSolSolAmount,
     turboSolUsdcAmount,
+    invictusLsinAmount,
+    invictusUsdcAmount,
+    invictusUstAmount,
+    stepPoolStepAmount,
+    stepPoolSolAmount,
+    stepPoolXstepAmount,
+    stepPoolUsdcAmount,
   ] = await Promise.all([
     getTokenBalance(
       "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
@@ -194,10 +218,38 @@ async function tvl() {
       "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
       "55YceCDfyvdcPPozDiMeNp9TpwmL1hdoTEFw5BMNWbpf"
     ),
+    getTokenBalance(
+      "LsinpBtQH68hzHqrvWw4PYbH7wMoAobQAzcvxVHwTLv",
+      "6N6tqnemGoR5pUdtKKp3FvdD94Gi98f2ySEo1dzZ2Uqv"
+    ),
+    getTokenBalance(
+      "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "6N6tqnemGoR5pUdtKKp3FvdD94Gi98f2ySEo1dzZ2Uqv"
+    ),
+    getTokenBalance(
+      "9vMJfxuKxXBoEa7rM12mYLMwTacLMLDJqHozw96WQL8i",
+      "6N6tqnemGoR5pUdtKKp3FvdD94Gi98f2ySEo1dzZ2Uqv"
+    ),
+    getTokenBalance(
+      "StepAscQoEioFxxWGnh2sLBDFp9d8rvKz2Yp39iDpyT",
+      "csotR9rcbLV3bCzBKxNJ3GjYhzH9cXffZX3TAQpw4oG"
+    ),
+    getTokenBalance(
+      "So11111111111111111111111111111111111111112",
+      "csotR9rcbLV3bCzBKxNJ3GjYhzH9cXffZX3TAQpw4oG"
+    ),
+    getTokenBalance(
+      "xStpgUCss9piqeFUk2iLVcvJEGhAdJxJQuwLkXP555G",
+      "csotR9rcbLV3bCzBKxNJ3GjYhzH9cXffZX3TAQpw4oG"
+    ),
+    getTokenBalance(
+      "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "csotR9rcbLV3bCzBKxNJ3GjYhzH9cXffZX3TAQpw4oG"
+    ),
   ]);
   return {
     bitcoin: btcAmount,
-    "usd-coin": usdcAmount + turboSolUsdcAmount,
+    "usd-coin": usdcAmount + turboSolUsdcAmount + invictusUsdcAmount + stepPoolUsdcAmount,
     ethereum: ethAmount + wewethAmount,
     serum: srmAmount,
     tether: usdtAmount,
@@ -205,13 +257,16 @@ async function tvl() {
     raydium: rayAmount,
     saber: sbrAmount,
     mercurial: merAmount,
-    solana: solAmount + turboSolSolAmount,
+    solana: solAmount + turboSolSolAmount + stepPoolSolAmount,
     msol: msolAmount,
     solend: slndAmount,
     "socean-staked-sol": scnsolAmount,
     "lido-staked-sol": stsolAmount,
-    terrausd: ustAmount,
+    terrausd: ustAmount + invictusUstAmount,
     orca: orcaAmount,
+    lsin: invictusLsinAmount,
+    step: stepPoolStepAmount,
+    xstep: stepPoolXstepAmount,
   };
 }
 
